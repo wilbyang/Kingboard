@@ -1,0 +1,89 @@
+import { useState, useEffect } from 'react';
+import { Task, PaginatedResponse } from '../types';
+import { normalizeDate } from '../utils';
+
+interface UseDataTableProps {
+  pageSize?: number;
+}
+
+export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
+  const [data, setData] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [sortField, setSortField] = useState<keyof Task>('id');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams({
+          page: page.toString(),
+          pageSize: pageSize.toString(),
+          search: searchTerm,
+          status: statusFilter,
+          sortField,
+          sortDirection,
+        });
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks?${queryParams}`);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const result: PaginatedResponse = await response.json();
+        setData(result.content);
+        setTotalItems(result.total);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, pageSize, searchTerm, statusFilter, sortField, sortDirection]);
+
+  const handleSort = (field: keyof Task) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortData = (items: Task[]): Task[] => {
+    return [...items].sort((a, b) => {
+      let aValue = a[sortField];
+      let bValue = b[sortField];
+
+      if (sortField === 'createdOn') {
+        aValue = normalizeDate(aValue as string | number);
+        bValue = normalizeDate(bValue as string | number);
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  return {
+    data: sortData(data),
+    loading,
+    error,
+    page,
+    setPage,
+    totalPages: Math.ceil(totalItems / pageSize),
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    sortField,
+    sortDirection,
+    handleSort,
+  };
+};

@@ -1,0 +1,87 @@
+plugins {
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.google.cloud.tools.jib' version '3.4.2'
+}
+
+group = 'com.king'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.data:spring-data-commons'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+checkstyle {
+    toolVersion = '8.45'
+    configFile = file("${rootDir}/checkstyle.xml")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                "**/model/**",
+                "**/config/**"
+            ])
+        }))
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+} 
+
+jib {
+    from {
+        image = 'openjdk:17-jdk-slim'
+        auth {
+            username = 'liuliguang'
+            password = 'yangbo'
+        }
+    }
+    to {
+        image = 'kingboard-backend'
+        tags = ['latest', version.toString()]
+    }
+    container {
+        mainClass = 'com.king.kingboard.KingboardApplication'
+        ports = ['8080']
+        environment = [
+            'SPRING_PROFILES_ACTIVE': 'prod',
+            'SERVER_PORT': '8080'
+        ]
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        jvmFlags = [
+            '-Xms512m',
+            '-Xmx512m'
+        ]
+    }
+}
