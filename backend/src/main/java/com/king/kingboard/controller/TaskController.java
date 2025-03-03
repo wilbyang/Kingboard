@@ -18,10 +18,10 @@ public class TaskController {
 
     @GetMapping
     public Page<Task> getData(
-        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String search,
         @RequestParam(required = false) String status,
         Pageable pageable
     ) {
-        return taskService.getFilteredData(name, status, pageable);
+        return taskService.getFilteredData(search, status, pageable);
     }
 } 

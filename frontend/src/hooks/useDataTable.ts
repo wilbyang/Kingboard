@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Task, PaginatedResponse } from '../types';
 import { normalizeDate } from '../utils';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UseDataTableProps {
   pageSize?: number;
 }
 
 export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
+  const { token } = useAuth();
   const [data, setData] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +21,8 @@ export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!token) return; // Don't fetch if not authenticated
+      
       setLoading(true);
       try {
         const queryParams = new URLSearchParams({
@@ -30,7 +34,12 @@ export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
           sortDirection,
         });
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks?${queryParams}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tasks?${queryParams}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
         if (!response.ok) throw new Error('Failed to fetch data');
         
         const result: PaginatedResponse = await response.json();
@@ -44,7 +53,7 @@ export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
     };
 
     fetchData();
-  }, [page, pageSize, searchTerm, statusFilter, sortField, sortDirection]);
+  }, [page, pageSize, searchTerm, statusFilter, sortField, sortDirection, token]);
 
   const handleSort = (field: keyof Task) => {
     if (field === sortField) {

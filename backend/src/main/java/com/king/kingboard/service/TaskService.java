@@ -34,7 +34,7 @@ public class TaskService {
         List<Task> allItems = fetchAllData();
         
         List<Task> filteredItems = allItems.stream()
-            .filter(item -> (!StringUtils.hasLength(name) || item.getName().contains(name))
+            .filter(item -> (!StringUtils.hasLength(name) || item.getName().toLowerCase().contains(name.toLowerCase()))
                 && (!StringUtils.hasLength(status) || item.getStatus().equals(status)))
             .collect(Collectors.toList());
         

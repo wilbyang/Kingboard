@@ -54,5 +54,12 @@ export const handlersGen = (mockDatabase: Task[]) => {
         pageSize
       });
     }),
+    http.post('/api/auth/login', async ({ request }) =>  {
+      const { username, password } = await request.json();
+      if (username === 'user' && password === 'password') {
+        return HttpResponse.json({ token: 'mocked-token' });
+      }
+      return HttpResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }),
   ];
 }

@@ -1,9 +1,9 @@
 package com.king.kingboard.controller.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LoginRequest {
+    @JsonProperty("username")
     private String userName;
     private String password;
 
