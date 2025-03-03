@@ -1,12 +1,12 @@
 ###
-GET http://localhost:7888/api/tasks?page=1&pageSize=10&search=&status=&sortField=id&sortDirection=asc
+GET http://localhost:7888/api/tasks?page=1&pageSize=10&search=amaz&status=&sortField=id&sortDirection=asc
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQxMDE0MDgwLCJleHAiOjE3NDExMDA0ODB9.PGIXfVvDeKLwrBOUmN0GUzfgdwc1f-cp8wpD8LIX9j1hd4u0PkmEkg5r7x9n9sIhg7EgezwHvG6w9Yc5sor-Ww
 ###
 POST http://localhost:7888/api/auth/login
 Content-Type: application/json
 
 {
-  "userName": "user",
+  "userName": "user1",
   "password": "password"
 }
 

@@ -57,7 +57,7 @@ class TaskServiceTest {
             .thenReturn(mockResponse);
 
         // Execute
-        Page<Task> result = taskService.getFilteredData(null, null, PageRequest.of(0, 10));
+        Page<Task> result = taskService.getFilteredTasks(null, null, PageRequest.of(0, 10));
 
         // Verify
         assertNotNull(result);

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ArrowUpDown, Search } from 'lucide-react';
 import { Task } from '../types';
 import { useDataTable } from '../hooks/useDataTable';
-import { formatDate } from '../utils';
+import TableRow from './TableRow';
+import './DataTable.css';
+import debounce from 'lodash/debounce';
 
 const DataTable: React.FC = () => {
   const {
@@ -20,6 +22,13 @@ const DataTable: React.FC = () => {
     sortDirection,
     handleSort,
   } = useDataTable();
+
+  const debouncedSetSearchTerm = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+    }, 300),
+    []
+  );
 
   if (error) {
     return <div className="error">Error: {error}</div>;
@@ -42,8 +51,8 @@ const DataTable: React.FC = () => {
           <input
             type="text"
             placeholder="Search by name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            defaultValue={searchTerm}
+            onChange={(e) => debouncedSetSearchTerm(e.target.value)}
           />
         </div>
         <select
@@ -75,14 +84,7 @@ const DataTable: React.FC = () => {
             </tr>
           ) : (
             data.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.name}</td>
-                <td>{formatDate(item.createdOn)}</td>
-                <td>{item.status}</td>
-                <td>{item.description}</td>
-                <td>{item.delta}</td>
-              </tr>
+              <TableRow key={item.id} item={item} />
             ))
           )}
         </tbody>
@@ -105,100 +107,6 @@ const DataTable: React.FC = () => {
           Next
         </button>
       </div>
-
-      <style>{`
-        .container {
-          padding: 20px;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        .controls {
-          display: flex;
-          gap: 20px;
-          margin-bottom: 20px;
-        }
-
-        .search-box {
-          position: relative;
-          flex: 1;
-        }
-
-        .search-box input {
-          width: 100%;
-          padding: 8px 32px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-
-        .search-icon {
-          position: absolute;
-          left: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 16px;
-          height: 16px;
-          color: #666;
-        }
-
-        select {
-          padding: 8px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          min-width: 150px;
-        }
-
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 20px;
-        }
-
-        th, td {
-          padding: 12px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-        }
-
-        th {
-          background-color: #f5f5f5;
-          font-weight: bold;
-        }
-
-        tr:hover {
-          background-color: #f9f9f9;
-        }
-
-        .pagination {
-          display: flex;
-          justify-content: center;
-          gap: 20px;
-          align-items: center;
-        }
-
-        button {
-          padding: 8px 16px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          background-color: #fff;
-          cursor: pointer;
-        }
-
-        button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        button:hover:not(:disabled) {
-          background-color: #f5f5f5;
-        }
-
-        .error {
-          color: red;
-          padding: 20px;
-          text-align: center;
-        }
-      `}</style>
     </div>
   );
 };

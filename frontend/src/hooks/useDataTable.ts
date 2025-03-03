@@ -7,7 +7,7 @@ interface UseDataTableProps {
   pageSize?: number;
 }
 
-export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
+export const useDataTable = ({ pageSize = 20 }: UseDataTableProps = {}) => {
   const { token } = useAuth();
   const [data, setData] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ export const useDataTable = ({ pageSize = 10 }: UseDataTableProps = {}) => {
         
         const result: PaginatedResponse = await response.json();
         setData(result.content);
-        setTotalItems(result.total);
+        setTotalItems(result.totalElements);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {

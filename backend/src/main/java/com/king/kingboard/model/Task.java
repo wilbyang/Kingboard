@@ -1,8 +1,6 @@
 package com.king.kingboard.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.king.kingboard.util.MultiFormatInstantDeserializer;
 
 import java.time.Instant;
 
@@ -35,8 +33,11 @@ public class Task {
     }
 
     public Instant getCreatedOn() {
-        Instant tmp = correctPossiblyMisinterpretedInstant(createdOn);
-        return tmp;
+        if (createdOn != null){
+            return correctPossiblyMisinterpretedInstant(createdOn);
+        }
+
+        return Instant.ofEpochMilli(0L);
     }
 
     public void setCreatedOn(Instant createdOn) {

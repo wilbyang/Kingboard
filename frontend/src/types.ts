@@ -9,7 +9,7 @@ export interface Task {
 
 export interface PaginatedResponse {
   content: Task[];
-  total: number;
+  totalElements: number;
   page: number;
   pageSize: number;
 }
