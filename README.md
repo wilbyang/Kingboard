@@ -116,7 +116,7 @@ The frontend will be available at `http://localhost:3000`
 
 ### Frontend Development
 - The frontend is built with React using modern hooks and practices
-- Custom CSS is used for styling without external UI frameworks
+- Custom CSS is used for styling 
 - Debouncing is implemented for search functionality to optimize performance
 - To build for production:
   ```bash
@@ -129,6 +129,9 @@ The frontend will be available at `http://localhost:3000`
 - **Rate Limiting**: Rate limiting for all API requests
 - **Monitoring**: Spring Boot Actuator for monitoring and metrics
 - **Test coverage**: 100% test coverage for all API requests
+- **E2E Tests**: E2E tests for the frontend
+- **Github Actions**: Github Actions for CI/CD
+- **Kubernetes**: Kubernetes deployment for the application
 
 
 
