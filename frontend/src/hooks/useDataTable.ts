@@ -20,6 +20,13 @@ export const useDataTable = ({ pageSize = 20 }: UseDataTableProps = {}) => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
+    // Reset to first page when search or status filter changes
+    if (searchTerm || statusFilter) {
+      setPage(1);
+    }
+  }, [searchTerm, statusFilter]);
+
+  useEffect(() => {
     const fetchData = async () => {
       if (!token) return; // Don't fetch if not authenticated
       

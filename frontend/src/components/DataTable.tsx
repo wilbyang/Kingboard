@@ -63,6 +63,7 @@ const DataTable: React.FC = () => {
           <option value="COMPLETED">Completed</option>
           <option value="PENDING">Pending</option>
           <option value="FAILED">Failed</option>
+          <option value="CANCELED">Canceled</option>
         </select>
       </div>
 

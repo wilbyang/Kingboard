@@ -15,6 +15,8 @@ const StatusIcon = ({ status }: { status: string }) => {
       return <Clock className="status-pending" size={16} />;
     case 'FAILED':
       return <XCircle className="status-failed" size={16} />;
+    case 'CANCELED':
+      return <XCircle className="status-canceled" size={16} />;
     default:
       return null;
   }
