@@ -1,5 +1,6 @@
 package com.king.kingboard.config;
 
+import com.king.kingboard.accesscontrol.JwtAuthenticationFilter;
 import com.king.kingboard.service.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

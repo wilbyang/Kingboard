@@ -1,4 +1,4 @@
-package com.king.kingboard.config;
+package com.king.kingboard.accesscontrol;
 
 import com.king.kingboard.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;

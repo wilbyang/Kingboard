@@ -1,4 +1,4 @@
-package com.king.kingboard.controller.dto;
+package com.king.kingboard.dto;
 
 public class JwtResponse {
     private String token;

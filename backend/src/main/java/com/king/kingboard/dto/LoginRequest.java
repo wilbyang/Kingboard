@@ -1,4 +1,4 @@
-package com.king.kingboard.controller.dto;
+package com.king.kingboard.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
