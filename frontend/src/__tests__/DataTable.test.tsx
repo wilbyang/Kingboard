@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor, act} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DataTable from '../components/DataTable';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -18,32 +18,46 @@ vi.mock('../contexts/AuthContext', () => ({
 
 // Wrap component with necessary providers
 const renderWithProviders = (component: React.ReactElement) => {
-  return render(
-    <AuthProvider>
-      {component}
-    </AuthProvider>
-  );
+  return act(() => {
+    render(
+      <AuthProvider>
+        {component}
+      </AuthProvider>
+    );
+  });
 };
 
 describe('DataTable', () => {
-  it('renders loading state initially', () => {
+  it('renders loading state initially',  () => {
+
     renderWithProviders(<DataTable />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('renders data after loading', async () => {
-    renderWithProviders(<DataTable />);
-    await waitFor(() => {
-      expect(screen.getByText('hardcoded_11111')).toBeInTheDocument();
-      expect(screen.getByText('hardcoded_22222')).toBeInTheDocument();
+    await act(async () => {
+      renderWithProviders(<DataTable />);
     });
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('hardcoded_11111')).toBeInTheDocument();
+    expect(screen.getByText('hardcoded_22222')).toBeInTheDocument();
   });
 
   it('handles search functionality', async () => {
-    renderWithProviders(<DataTable />);
+    await act(async () => {
+      renderWithProviders(<DataTable />);
+    });
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
     
     const searchInput = screen.getByPlaceholderText('Search by name...');
-    await userEvent.type(searchInput, 'hardcoded');
+    await act(async () => {
+      await userEvent.type(searchInput, 'hardcoded');
+    });
     
     await waitFor(() => {
       expect(screen.getByText('hardcoded_11111')).toBeInTheDocument();
@@ -53,10 +67,18 @@ describe('DataTable', () => {
   });
 
   it('handles status filtering', async () => {
-    renderWithProviders(<DataTable />);
+    await act(async () => {
+      renderWithProviders(<DataTable />);
+    });
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
     
     const statusSelect = screen.getByRole('combobox');
-    await userEvent.selectOptions(statusSelect, 'COMPLETED');
+    await act(async () => {
+      await userEvent.selectOptions(statusSelect, 'COMPLETED');
+    });
     
     await waitFor(() => {
       expect(screen.getByText('hardcoded_11111')).toBeInTheDocument();
@@ -64,9 +86,12 @@ describe('DataTable', () => {
   });
 
   it('formats dates correctly', async () => {
-    renderWithProviders(<DataTable />);
+    await act(async () => {
+      renderWithProviders(<DataTable />);
+    });
     
     await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       expect(screen.getByText(/February 28th, 2025/)).toBeInTheDocument();
     });
   });
@@ -75,7 +100,9 @@ describe('DataTable', () => {
 describe('DataTable Authentication', () => {
   it('includes auth token in API requests', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch');
-    renderWithProviders(<DataTable />);
+    await act(async () => {
+      renderWithProviders(<DataTable />);
+    });
     
     await waitFor(() => {
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -90,12 +117,13 @@ describe('DataTable Authentication', () => {
   });
 
   it('handles unauthorized errors', async () => {
-    // Mock fetch to return 401
     vi.spyOn(global, 'fetch').mockImplementationOnce(() =>
       Promise.resolve(new Response(null, { status: 401 }))
     );
 
-    renderWithProviders(<DataTable />);
+    await act(async () => {
+      renderWithProviders(<DataTable />);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Error: Failed to fetch data')).toBeInTheDocument();

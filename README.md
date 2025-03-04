@@ -1,17 +1,31 @@
 # Data Display Application
 
 ## Introduction
-This application is a full-stack solution that demonstrates modern web development practices by implementing a data visualization system. It features a Spring Boot backend that securely fetches and processes data from a remote API, and a React frontend that presents this data in an interactive table format.
+This application is a full-stack solution that demonstrates modern web development practices by implementing a data table display system. It features a Spring Boot backend that securely fetches and processes data from a remote API, and a React frontend that presents this data in an interactive table format.
 
-### Key Features
-- **Secure API Access**: JWT-based authentication for all API requests
-- **Real-time Filtering**: Client-side filtering with debounced search to prevent excessive API calls
-- **Responsive Design**: Custom-built UI components without relying on UI frameworks
-- **Pagination**: Server-side pagination for efficient data handling
-- **Code Quality**: Integrated with Checkstyle for code quality and JaCoCo for test coverage
-- **Modern Stack**: Spring Boot 3.x for backend and React for frontend
+### Backend Features
+- **Modern Stack**: Spring Boot 3.x(Jackson, Caffeine, JWT, etc) + Gradle
 - **Containerization**: Dockerized application with Jib for easy deployment
-- **Cloud Native**: Built with Cloud Native principles for Kubernetes deployment
+- **Secure API Access**: JWT-based authentication for protected API resources
+- **CORS**: CORS is configured to allow requests from the frontend application
+- **Caching**: Caffeine based caching mechanism for efficient data handling
+- **Pagination**: Server-side pagination for efficient data handling
+- **Req/Resp Logging**: AOP based request&response logging for better debugging/troubleshooting and monitoring
+- **Error Handling**: Unified error handling for all API requests
+- **Code Quality Assurance**: Integrated with Checkstyle for code quality and JaCoCo for test coverage
+- **Api docs**: Swagger UI for API documentation
+
+
+
+
+### Frontend Key Features
+- **Performance Optimization**: Debouncing for search functionality to prevent excessive API calls
+- **Independent development for Efficiency**: Independent frontend development with mocks for backend by MSW
+- **Code Quality**: Integrated with ESLint for code quality
+- **Testing**: Good Integration Tests coverage
+- **Responsive Design**: Custom-built UI components without relying on UI frameworks
+- **Pagination**: Client-side pagination for efficient data handling
+- **Modern Stack**: React + Vite + TypeScript + TailwindCSS
 
 
 ## Prerequisites
@@ -28,18 +42,26 @@ This application is a full-stack solution that demonstrates modern web developme
 ```bash
 cd backend
 ```
-
-2. Build the application:
+2. Run Tests:
+```bash
+./gradlew test
+```
+3. Build the application:
 ```bash
 ./gradlew build
 ```
 
-3. Run the application:
+4. Run the application:
 ```bash
 ./gradlew bootRun
 ```
-
 The backend will start on `http://localhost:8080`
+
+5. Build Docker Image:
+```bash
+./gradlew jibDockerBuild
+```
+The Docker image will be built and pushed to the local Docker registry.
 
 ### API Documentation
 The API documentation is available at `http://localhost:8080/swagger-ui/index.html`
@@ -55,12 +77,17 @@ cd frontend
 npm install
 ```
 
-3. Start the development server:
+3. Test the application:
+```bash
+npm run test
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-4. Build the application:
+5. Build the application:
 for development:
 ```bash
 npm run build:dev
@@ -69,7 +96,7 @@ for production:
 ```bash
 npm run build
 ```
-5. Run the application:
+6. Run the application:
 ```bash
 python -m http.server --bind localhost --directory dist 3000
 ```
@@ -96,40 +123,14 @@ The frontend will be available at `http://localhost:3000`
   npm run build
   ```
 
-## API Endpoints
+## Roadmap
+- **Fuzzy Search**: Fuzzy search for the data table
+- **Unified Response**: Unified response format for all API responses
+- **Rate Limiting**: Rate limiting for all API requests
+- **Monitoring**: Spring Boot Actuator for monitoring and metrics
+- **Test coverage**: 100% test coverage for all API requests
 
-### Data Endpoint
-```
-GET /api/tasks
-```
-Parameters:
-- `page` (optional): Page number (default: 0)
-- `size` (optional): Page size (default: 10)
-- `name` (optional): Filter by name
-- `status` (optional): Filter by status
 
-Response:
-```json
-{
-  "content": [
-    {
-      "id": 6690,
-      "status": "COMPLETED",
-      "createdOn": 1543325977000,
-      "name": "gallant_chandrasekhar",
-      "description": "Example description",
-      "delta": 1770
-    }
-  ],
-  "totalPages": 10,
-  "totalElements": 100
-}
-```
-
-## Security
-- All API endpoints (except /api/auth) require JWT authentication
-- Tokens should be included in the Authorization header as Bearer tokens
-- CORS is configured to allow requests from the frontend application
 
 ## Contributing
 1. Fork the repository

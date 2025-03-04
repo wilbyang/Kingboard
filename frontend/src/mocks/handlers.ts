@@ -12,8 +12,8 @@ export const handlersGen = (mockDatabase: Task[]) => {
   return [
     http.get('/api/tasks', ({ request }) => {
       const url = new URL(request.url);
-      const page = parseInt(url.searchParams.get('page') || '1');
-      const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
+      const page = parseInt(url.searchParams.get('page') || '0');
+      const pageSize = parseInt(url.searchParams.get('size') || '10');
       const search = url.searchParams.get('search') || '';
       const status = url.searchParams.get('status') || '';
       const sortField = url.searchParams.get('sortField') as keyof Task || 'id';
@@ -44,7 +44,7 @@ export const handlersGen = (mockDatabase: Task[]) => {
       });
 
       // Apply pagination
-      const start = (page - 1) * pageSize;
+      const start = page * pageSize;
       const paginatedData = filteredData.slice(start, start + pageSize);
 
       return HttpResponse.json({

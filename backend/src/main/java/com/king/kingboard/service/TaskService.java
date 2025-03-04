@@ -40,7 +40,7 @@ public class TaskService {
                 && (!StringUtils.hasLength(status) || item.getStatus().equals(status)))
             .collect(Collectors.toList());
         
-        int start = (int) pageable.getOffset() - pageable.getPageSize();
+        int start = (int) pageable.getOffset();
         if (start > filteredItems.size()) {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }        

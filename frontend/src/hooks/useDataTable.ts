@@ -26,8 +26,8 @@ export const useDataTable = ({ pageSize = 20 }: UseDataTableProps = {}) => {
       setLoading(true);
       try {
         const queryParams = new URLSearchParams({
-          page: page.toString(),
-          pageSize: pageSize.toString(),
+          page: (page - 1).toString(),
+          size: pageSize.toString(),
           search: searchTerm,
           status: statusFilter,
           sortField,
